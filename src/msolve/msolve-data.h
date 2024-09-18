@@ -132,6 +132,13 @@ typedef struct{
   CF_t *vvec ALIGNED32; /* stores the result of matrix vector product in Wiedeman */
   CF_t *res ALIGNED32; /* array storing the term sequences needed after Wiedeman */
   mp_limb_t *pts;
+  int32_t B; /* number of columns of the multiplying matrices in 
+                 Block Wiedemann */
+  CF_l_t *seqmat; /* Sequence of matrices produced by Block-Wiedemann
+                   All these matrices have size B x B*/ 
+  CF_t *rand_mat ALIGNED32; /* Random matrix used in B-Wiedemann */
+  CF_t *res_mat ALIGNED32; /* result matrix (matxn * Rmat) */
+  CF_t *tres ALIGNED32; /*temporary matrix to store matxxn->dense_part * rand_mat */
 } fglm_data_t;
 
 

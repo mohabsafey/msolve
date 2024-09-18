@@ -708,13 +708,7 @@ static void generate_matrix_sequence(sp_matfglm_t *matxn, fglm_data_t *data,
   const szmat_t ncols = matxn->ncols;
   const szmat_t nrows = matxn->nrows;
 
-  int BL = 0;
-  if(nvars < 16){
-      BL = 16;
-  }
-  else{
-      BL = 32;
-  }
+  int BL = data->B;
 
   /* allocates random matrix */
   CF_t *Rmat ALIGNED32;
