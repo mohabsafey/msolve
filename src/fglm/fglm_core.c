@@ -741,7 +741,7 @@ static void generate_matrix_sequence(sp_matfglm_t *matxn, fglm_data_t *data,
   }
   memset(tres, 0, nrows*ncols*sizeof(CF_t));
 
-  szmat_t nb = 2 * matxn->ncols / BL;
+  szmat_t nb = 2 * (matxn->ncols / BL + 1);
   for(szmat_t i = 0; i < nb; i++){
     sparse_matfglm_mul(res, matxn, Rmat,
                        tres,
