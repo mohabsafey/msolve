@@ -39,8 +39,13 @@ static inline void free_sp_mat_fglm(sp_matfglm_t *mat){
 }
 
 static inline fglm_data_t *allocate_fglm_data(szmat_t nrows, szmat_t ncols, szmat_t nvars){
+    /* To be revised when Block Wiedemann will be finalized
+     * This is too much memory used: either we have data for Wiedemann, or we
+     * have data for Block-Wiedemann
+     * */
   fglm_data_t * data = malloc(sizeof(fglm_data_t));
 
+  data->bw_data = 0;
   szmat_t block_size = nvars; //block size in data->res
 
   if(posix_memalign((void **)&data->vecinit, 32, ncols*sizeof(CF_t))){
@@ -75,6 +80,42 @@ static inline fglm_data_t *allocate_fglm_data(szmat_t nrows, szmat_t ncols, szma
     data->vecinit[i] = 0;
   }
 
+#if BLOCKWIED > 0
+  /* Threshold for activating block Wiedemann set to 512 */
+  if(ncols > 512){
+      data->bw_data = 1;
+      data->B = 16;
+      if(nvars > 15){
+          while(data->B < nvars){
+              data->B *= 2;
+          }
+      }
+
+      /* allocates random matrix */
+      if(posix_memalign((void **)&data->rand_mat, 32, data->B*ncols*sizeof(CF_t))){
+          fprintf(stderr, "posix_memalign failed\n");
+          exit(1);
+      }
+      memset(data->rand_mat, 0, data->B * ncols * sizeof(CF_t));
+      
+      /* allocates result matrix (matxn * rand_mat) */
+      if(posix_memalign((void **)&data->res_mat, 32, data->B*ncols*sizeof(CF_t))){
+          fprintf(stderr, "posix_memalign failed\n");
+          exit(1);
+      }
+      memset(data->res_mat, 0, data->B * ncols * sizeof(CF_t));
+
+      /* allocates temporary matrix */
+      if(posix_memalign((void **)&data->tres_mat, 32, nrows * ncols * sizeof(CF_t))){
+          fprintf(stderr, "posix_memalign failed\n");
+          exit(1);
+      }
+      memset(data->tres_mat, 0, nrows*ncols*sizeof(CF_t));
+
+      int64_t nmat = 2 * (ncols / data->B + 1) * data->B * data->B;
+      data->seq_mat = (CF_l_t *)calloc(nmat, sizeof(CF_l_t));
+  }
+#endif
   return data;
 }
 
