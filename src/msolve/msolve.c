@@ -3956,6 +3956,7 @@ int core_msolve(
   int32_t initial_hts,
   int32_t max_pairs,
   int32_t elim_block_len,
+  int32_t mhb,
   int32_t update_ht,
   int32_t generate_pbm,
   int32_t reduce_gb,
@@ -4025,7 +4026,7 @@ restart:
 
             success = initialize_gba_input_data(&bs, &bht, &st,
                     gens->lens, gens->exps, (void *)gens->cfs,
-                    1073741827, 0 /* DRL order */, elim_block_len, gens->nvars,
+                    1073741827, 0 /* DRL order */, elim_block_len, mhb, gens->nvars,
                     /* gens->field_char, 0 [> DRL order <], gens->nvars, */
                     gens->ngens, saturate, initial_hts, nr_threads, max_pairs,
                     update_ht, la_option, use_signatures, 1 /* reduce_gb */, 0,
@@ -4107,7 +4108,8 @@ restart:
              *             to the correct field characteristic. */
             success = initialize_gba_input_data(&bs, &bht, &st,
                     gens->lens, gens->exps, (void *)gens->cfs,
-                    gens->field_char, 0 /* DRL order */, elim_block_len, gens->nvars,
+                    gens->field_char, 0 /* DRL order */, elim_block_len, 
+                    mhb, gens->nvars,
                     /* gens->field_char, 0 [> DRL order <], gens->nvars, */
                     gens->ngens, saturate, initial_hts, nr_threads, max_pairs,
                     update_ht, la_option, use_signatures, 1 /* reduce_gb */, 0,
@@ -4199,7 +4201,8 @@ restart:
              * to the correct field characteristic. */
             int success = initialize_gba_input_data(&bs, &bht, &st,
                     gens->lens, gens->exps, (void *)gens->cfs,
-                    1073741827, 0 /* DRL order */, elim_block_len, gens->nvars,
+                    1073741827, 0 /* DRL order */, elim_block_len, 
+                    mhb, gens->nvars,
                     /* gens->field_char, 0 [> DRL order <], gens->nvars, */
                     gens->ngens, 1, initial_hts, nr_threads, max_pairs,
                     update_ht, la_option, use_signatures, 1 /* reduce_gb */, 0,
@@ -4585,7 +4588,8 @@ restart:
              * to the correct field characteristic. */
             success = initialize_gba_input_data(&bs, &bht, &st,
                     gens->lens, gens->exps, (void *)gens->cfs,
-                    gens->field_char, 0 /* DRL order */, elim_block_len, gens->nvars,
+                    gens->field_char, 0 /* DRL order */, elim_block_len, 
+                    mhb, gens->nvars,
                     /* gens->field_char, 0 [> DRL order <], gens->nvars, */
                     gens->ngens, normal_form, initial_hts, nr_threads, max_pairs,
                     update_ht, la_option, use_signatures, 1 /* reduce_gb */, 0,
@@ -5132,6 +5136,7 @@ restart:
               flags->nr_threads = nr_threads;
               flags->max_nr_pairs = max_pairs;
               flags->elim_block_len = elim_block_len;
+              flags->mhb = mhb;
               flags->truncate_lifting = truncate_lifting;
               flags->reset_ht = update_ht;
               flags->la_option = la_option;
@@ -5552,7 +5557,7 @@ void msolve_julia(
 
     /* main msolve functionality */
     int ret = core_msolve(la_option, use_signatures, nr_threads, info_level,
-			  initial_hts, max_nr_pairs, elim_block_len, reset_ht,
+			  initial_hts, max_nr_pairs, elim_block_len, 0 /* mhb */, reset_ht,
                           0 /* generate pbm */, 1 /* reduce_gb */,
                           print_gb, 0 /*truncate_lifting*/, get_param,
 			  genericity_handling, 0 /* unstable_staircase -> change to 2?*/,
