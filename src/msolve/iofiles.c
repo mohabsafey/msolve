@@ -538,6 +538,35 @@ static void get_variables(FILE *fh, char * line, int max_line_size,
 
 }
 
+static void get_multiblocks(FILE *fh, char * line, int max_line_size,
+                               int32_t *mhb, int32_t nr_vars, char **vnames){
+
+  if((*mhb) == 0){
+    return;
+  }
+  if(fgets(line, max_line_size, fh) != NULL){
+    int32_t bs = atoi(line);
+    if(bs > 0){
+      *mhb = (int32_t) bs;
+      if(bs > nr_vars){
+        fprintf(stderr, "Warning: block is too large\n");
+        free(vnames);
+        free(line);
+        fclose(fh);
+        exit(1);
+      }
+    }
+    else{
+      fprintf(stderr, "Bad file format (multi-homogeneity structure)\n");
+      free(vnames);
+      free(line);
+      fclose(fh);
+      exit(1);
+    }
+  }
+
+}
+
 static void get_characteristic(FILE *fh, char * line, int max_line_size,
                                int32_t *field_char, char **vnames){
   *field_char = 0;
@@ -979,7 +1008,8 @@ static int duplicate_vnames(char **vnames, int32_t nvars) {
 //nr_gens is a pointer to the number of generators
 static inline void get_data_from_file(char *fn, int32_t *nr_vars,
                                       int32_t *field_char,
-                                      int32_t *nr_gens, data_gens_ff_t *gens){
+                                      int32_t *nr_gens, 
+                                      int32_t *mhb, data_gens_ff_t *gens){
   *nr_vars = get_nvars(fn);
   if (*nr_vars == -1)
     fprintf(stderr,"Bad file format (first line).\n");
@@ -1005,6 +1035,7 @@ static inline void get_data_from_file(char *fn, int32_t *nr_vars,
       exit(1);
   }
   get_characteristic(fh, line, max_line_size, field_char, vnames);
+  get_multiblocks(fh, line, max_line_size, mhb, *nr_vars, vnames);
 
   initialize_data_gens(*nr_vars, *nr_gens, *field_char, gens);
 

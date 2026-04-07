@@ -221,6 +221,7 @@ static void getoptions(
         int32_t *generate_pbm_files,
 	int64_t *seed,
         int32_t *info_level,
+        int32_t *mhb,
         files_gb *files){
   int opt, errflag = 0, fflag = 1;
   char *filename = NULL;
@@ -228,7 +229,7 @@ static void getoptions(
   char *out_fname = NULL;
   char *bin_out_fname = NULL;
   opterr = 1;
-  char short_options[] = "c:Cd:e:f:F:g:hiI:l:L:m:M:n:N:o:O:p:P:q:r:R:s:St:u:v:V";
+  char short_options[] = "c:Cd:D:e:f:F:g:hiI:l:L:m:M:n:N:o:O:p:P:q:r:R:s:St:u:v:V";
 
   /* For long options that have no equivalent short option, use a
      non-character as a pseudo short option, starting with CHAR_MAX + 1.
@@ -286,6 +287,9 @@ static void getoptions(
       if (*elim_block_len < 0) {
           *elim_block_len = 0;
       }
+      break;
+    case 'D':
+      *mhb = 1;
       break;
     case 'u':
       *update_ht = strtol(optarg, NULL, 10);
@@ -469,6 +473,7 @@ int main(int argc, char **argv){
     int32_t refine                = 0; /* not used at the moment */
     int32_t isolate               = 0; /* not used at the moment */
     int64_t seed                  = -1;
+    int32_t mhb                   = 0; /*multi-homogeneous structure */
 
     files_gb *files = malloc(sizeof(files_gb));
     if(files == NULL) exit(1);
@@ -481,7 +486,7 @@ int main(int argc, char **argv){
                &reduce_gb, &print_gb, &truncate_lifting, &genericity_handling, &unstable_staircase, &saturate, &colon,
                &normal_form, &normal_form_matrix, &is_gb, &lift_matrix, &get_param,
                &precision, &refine, &isolate, &generate_pbm,
-	       &seed, &info_level, files);
+	       &seed, &info_level, &mhb, files);
 
     /* srand initialization */
     uint32_t true_seed;
@@ -536,7 +541,7 @@ int main(int argc, char **argv){
     int32_t nr_gens     = 0;
     data_gens_ff_t *gens = allocate_data_gens();
 
-    get_data_from_file(files->in_file, &nr_vars, &field_char, &nr_gens, gens);
+    get_data_from_file(files->in_file, &nr_vars, &field_char, &nr_gens, &mhb, gens);
 #ifdef IODEBUG
     display_gens(stdout, gens);
 #endif
