@@ -773,6 +773,7 @@ int32_t check_and_set_meta_data(
         const uint32_t field_char,
         const int32_t mon_order,
         const int32_t elim_block_len,
+        const int32_t mhb,
         const int32_t nr_vars,
         const int32_t nr_gens,
         const int32_t nr_nf,
@@ -832,6 +833,11 @@ int32_t check_and_set_meta_data(
     if (st->nev >= st->nvars) {
         fprintf(stderr,"error: Too large elimination block.\n");
         exit(1);
+    }
+    st->mhb = mhb > 0 ? mhb : 0;
+    if(st->mhb > st->nvars){
+      fprintf(stderr,"error: Too large multi-homogeneous block.\n");
+      exit(1);
     }
     /* set hash table size */
     st->init_hts  = ht_size;
@@ -1090,6 +1096,7 @@ int32_t check_and_set_meta_data_trace(
         const uint32_t field_char,
         const int32_t mon_order,
         const int32_t elim_block_len,
+        const int32_t mhb,
         const int32_t nr_vars,
         const int32_t nr_gens,
         const int32_t nr_nf,
@@ -1116,7 +1123,7 @@ int32_t check_and_set_meta_data_trace(
         st->nprimes = 10;
     }
     return check_and_set_meta_data(st, lens, exps, cfs, invalid_gens,
-            field_char, mon_order, elim_block_len, nr_vars, nr_gens,
+            field_char, mon_order, elim_block_len, mhb, nr_vars, nr_gens,
             nr_nf, ht_size, nr_threads, max_nr_pairs, reset_hash_table,
             la_option, use_signatures, reduce_gb, pbm_file, truncate_lifting,
             info_level);
