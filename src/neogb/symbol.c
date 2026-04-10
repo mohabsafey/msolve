@@ -271,17 +271,6 @@ static int32_t select_spairs_by_minimal_degree(
         }
     }
     npd  = i;
-    if(npd + 1 < psl->ld){
-        if(ps[npd + 1].deg <= mdeg){
-            md->update = 0;
-        }
-        else{
-            md->update = 1;
-        }
-    }
-    else{
-        md->update = 1;
-    }
 
     /* printf("npd %d\n", npd); */
     /* sort_r(ps, (unsigned long)npd, sizeof(spair_t), spair_cmp, bht); */
