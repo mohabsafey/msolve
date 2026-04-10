@@ -431,6 +431,7 @@ struct md_t
     int32_t truncate_lifting;
 
     deg_t mhb;
+
     /* for f4sat */
     uint32_t new_multipliers;
     uint32_t nr_kernel_elts;

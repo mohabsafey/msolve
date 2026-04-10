@@ -356,7 +356,8 @@ static int32_t update(
         md_t *md
         )
 {
-        update_basis_f4(md->ps, bs, bs->ht, md, md->np);
+        update_basis_f4(md->ps, bs, bs->ht, md, md->np); 
+
         if (bs->constant) {
             return 1;
         } else {

@@ -191,6 +191,15 @@ static void select_all_spairs(
 }
 #endif
 
+/* only for non-elimination ordering */
+static deg_t mhb_degree(exp_t *exp, const int32_t mhb){
+    deg_t deg = 0;
+    for(int i = 1; i < mhb; i++){
+        deg+=exp[i];
+    }
+    return deg;
+}
+
 /* selection of spairs, at the moment only selection
 by minial degree of the spairs is supported
 
@@ -225,6 +234,11 @@ static int32_t select_spairs_by_minimal_degree(
     /* get minimal degree */
     mdeg  = ps[0].deg;
 
+    /********************************************************/
+    const int32_t bl = md->mhb + 1;
+    deg_t bdeg = mhb_degree(bht->ev[ps[0].lcm], bl);
+    //fprintf(stderr, "[%d, %d]\n", mdeg, bdeg);
+    /********************************************************/
     /* compute a truncated GB? Check maximal degree. */
     if (md->max_gb_degree < mdeg) {
         return 1; 
@@ -252,11 +266,23 @@ static int32_t select_spairs_by_minimal_degree(
     printf("\n");
 #endif
     for (i = 0; i < psl->ld; ++i) {
-        if (ps[i].deg > mdeg) {
+        if (ps[i].deg > mdeg || mhb_degree(bht->ev[ps[i].lcm], bl) - 1 > bdeg) {
             break;
         }
     }
     npd  = i;
+    if(npd + 1 < psl->ld){
+        if(ps[npd + 1].deg <= mdeg){
+            md->update = 0;
+        }
+        else{
+            md->update = 1;
+        }
+    }
+    else{
+        md->update = 1;
+    }
+
     /* printf("npd %d\n", npd); */
     /* sort_r(ps, (unsigned long)npd, sizeof(spair_t), spair_cmp, bht); */
     /* now do maximal selection if it applies */
