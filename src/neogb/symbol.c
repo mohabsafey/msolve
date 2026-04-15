@@ -237,7 +237,7 @@ static int32_t select_spairs_by_minimal_degree(
     /********************************************************/
     const int32_t bl = md->mhb + 1;
     deg_t bdeg = mhb_degree(bht->ev[ps[0].lcm], bl);
-    //fprintf(stderr, "[%d, %d]\n", mdeg, bdeg);
+    fprintf(stderr, "[%d, %d]\n", mdeg, bdeg);
     /********************************************************/
     /* compute a truncated GB? Check maximal degree. */
     if (md->max_gb_degree < mdeg) {
@@ -266,7 +266,7 @@ static int32_t select_spairs_by_minimal_degree(
     printf("\n");
 #endif
     for (i = 0; i < psl->ld; ++i) {
-        if (ps[i].deg > mdeg || mhb_degree(bht->ev[ps[i].lcm], bl) - 1 > bdeg) {
+        if (ps[i].deg > mdeg || (0==1 && mhb_degree(bht->ev[ps[i].lcm], bl) - 1 > bdeg)) {
             break;
         }
     }
