@@ -1035,7 +1035,6 @@ static inline void get_data_from_file(char *fn, int32_t *nr_vars,
       exit(1);
   }
   get_characteristic(fh, line, max_line_size, field_char, vnames);
-  get_multiblocks(fh, line, max_line_size, mhb, *nr_vars, vnames);
 
   initialize_data_gens(*nr_vars, *nr_gens, *field_char, gens);
 

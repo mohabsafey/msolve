@@ -236,7 +236,9 @@ static int32_t select_spairs_by_minimal_degree(
 
     /********************************************************/
     const int32_t bl = md->mhb + 1;
+    fprintf(stderr, "bl = %d\n", bl);
     deg_t bdeg = mhb_degree(bht->ev[ps[0].lcm], bl);
+    deg_t bdegt = mhb_degree(bht->ev[ps[0].lcm], 3);
     fprintf(stderr, "[%d, %d]\n", mdeg, bdeg);
     /********************************************************/
     /* compute a truncated GB? Check maximal degree. */
@@ -265,8 +267,33 @@ static int32_t select_spairs_by_minimal_degree(
     }
     printf("\n");
 #endif
+    deg_t cbdeg = bdegt;
+    deg_t tbdeg;
+    int32_t cnt = 0;
+    fprintf(stdout, "[%d", cbdeg);
+    for(i = 0; i < psl->ld; ++i){
+        if (ps[i].deg > mdeg) {
+            fprintf(stdout, ", %d]\n", cnt);
+            break;
+        }
+        else{
+            tbdeg = mhb_degree(bht->ev[ps[i].lcm], 3);
+            if(tbdeg > cbdeg){
+                fprintf(stdout, ", %d]", cnt);
+                cbdeg = tbdeg;
+                cnt = 1;
+                fprintf(stdout, "[%d", cbdeg);
+            }
+            else{
+                cnt++;
+            }
+        }
+    }
+    if( i == psl->ld ){
+       fprintf(stdout, ", %d][!]\n", cnt);
+    }
     for (i = 0; i < psl->ld; ++i) {
-        if (ps[i].deg > mdeg || (0==1 && mhb_degree(bht->ev[ps[i].lcm], bl) - 1 > bdeg)) {
+        if (ps[i].deg > mdeg || (mhb_degree(bht->ev[ps[i].lcm], bl) > bdeg + 1)) {
             break;
         }
     }

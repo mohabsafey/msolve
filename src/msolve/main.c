@@ -229,7 +229,7 @@ static void getoptions(
   char *out_fname = NULL;
   char *bin_out_fname = NULL;
   opterr = 1;
-  char short_options[] = "c:Cd:De:f:F:g:hiI:l:L:m:M:n:N:o:O:p:P:q:r:R:s:St:u:v:V";
+  char short_options[] = "c:Cd:D:e:f:F:g:hiI:l:L:m:M:n:N:o:O:p:P:q:r:R:s:St:u:v:V";
 
   /* For long options that have no equivalent short option, use a
      non-character as a pseudo short option, starting with CHAR_MAX + 1.
@@ -242,7 +242,7 @@ static void getoptions(
   };
   struct option long_options[] = {
     {"elimination", required_argument, NULL, 'e'},
-    {"multihom-block", no_argument, NULL, 'D'},
+    {"multihom-block", required_argument, NULL, 'D'},
     {"file", required_argument, NULL, 'f'},
     {"groebner-basis", required_argument, NULL, 'g'},
     {"help", no_argument, NULL, 'h'},
@@ -290,7 +290,7 @@ static void getoptions(
       }
       break;
     case 'D':
-      *mhb = 1;
+      *mhb = strtol(optarg, NULL, 10);
       break;
     case 'u':
       *update_ht = strtol(optarg, NULL, 10);
@@ -489,7 +489,6 @@ int main(int argc, char **argv){
                &precision, &refine, &isolate, &generate_pbm,
 	       &seed, &info_level, &mhb, files);
 
-      fprintf(stderr, "ici info = %d\n", info_level);
     /* srand initialization */
     uint32_t true_seed;
     if (seed < 0) {
