@@ -1609,7 +1609,10 @@ restart:
   initialize_rrec_data(recdata1);
   initialize_rrec_data(recdata2);
 
+  /* dlift is only set up by data_lift_init once the first modular basis is
+   * known; zero it so that no field can be read uninitialized before. */
   data_lift_t dlift;
+  memset(dlift, 0, sizeof(data_lift_t));
 
   /* indicates that dlift has been already initialized */
   int dlinit = 0;
